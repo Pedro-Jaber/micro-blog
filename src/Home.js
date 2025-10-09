@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import BlogList from "./BlogList";
+
+import useFetch from "./useFetch";
 
 const Home = () => {
   const handleClick = (e) => {
@@ -26,17 +28,7 @@ const Home = () => {
     console.log(name);
   };
 
-  const [blogs, setBlogs] = useState([
-    { title: "My new website", body: "lorem ipsum", author: "mario", id: 1 },
-    { title: "Welcome party!", body: "lorem ipsum", author: "yoshi", id: 2 },
-    { title: "Web dev top tips", body: "lorem ipsum", author: "mario", id: 3 },
-  ]);
-
-  const handleDelete = (id) => {
-    const newBlogs = blogs.filter((b) => b.id !== id);
-    setBlogs(newBlogs);
-  };
-
+  /*
   useEffect(() => {
     console.log("useEffect");
     console.log("blogs:", blogs);
@@ -48,44 +40,54 @@ const Home = () => {
   }, [name, blogs]);
   // ^^^^
   // Dependenci array (only run if these values change and in first render)
+  */
 
-  useEffect(() => {}, []);
+  const {
+    data: blogs,
+    isPending,
+    error,
+  } = useFetch("http://localhost:8000/blogs");
 
   return (
     <div className="home">
       <h2 style={{ marginBottom: "3rem" }}>Homepage</h2>
 
-      <div style={{ display: "none" }}>
-        <button onClick={handleClick}>Click me</button>
-        <button onClick={(e) => handleClickAgain(e, "John")}>Click me</button>
-      </div>
+      {false && (
+        <div>
+          <button onClick={handleClick}>Click me</button>
+          <button onClick={(e) => handleClickAgain(e, "John")}>Click me</button>
+        </div>
+      )}
 
-      <div style={{ display: "none" }}>
-        <p>
-          My name is {name} and I'm {age}
-        </p>
-        <button onClick={changeName}>Click me</button>
-      </div>
+      {false && (
+        <div>
+          <p>
+            My name is {name} and I'm {age}
+          </p>
+          <button onClick={changeName}>Click me</button>
+        </div>
+      )}
 
-      <div style={{ display: "inherit" }}>
-        <BlogList
-          blogs={blogs}
-          title="All Blogs!"
-          handleDelete={handleDelete}
-        />
-        {/* <BlogList
+      {false && (
+        <div>
+          <p>
+            My name is {name} and I'm {age}
+          </p>
+          <button onClick={() => setName("luigi")}>Click me</button>
+        </div>
+      )}
+
+      {true && (
+        <div>
+          {error && <div>{error}</div>}
+          {isPending && <div>Loading...</div>}
+          {blogs && <BlogList blogs={blogs} title="All Blogs!" />}
+          {/* <BlogList
           blogs={blogs.filter((b) => b.author === "mario")}
           title="Mario's Blogs!"
-          handleDelete={handleDelete}
         /> */}
-      </div>
-
-      <div style={{ display: "inherit" }}>
-        <p>
-          My name is {name} and I'm {age}
-        </p>
-        <button onClick={() => setName("luigi")}>Click me</button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
